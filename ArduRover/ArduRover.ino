@@ -85,25 +85,22 @@ void wiiChuck() {
         joyx = nunchuck_joyx() - 127;
         joyy = nunchuck_joyy() - 127;
         
+        Serial.print(joyx);
+        Serial.print(" -- ");
         Serial.println(joyy);
         
         joyx = (joyx);
         joyy = (joyy);        
         
         if (isLeft()) {
-          Serial.println("to the left");
           left(leftspeed,rightspeed);
         } else if (isRight()) {
-          Serial.println("to the right");
           right(leftspeed,rightspeed);
         } else if (isForward()) {
-          Serial.println("forward ho");
           forward(leftspeed,rightspeed);
         } else if (isReverse()) {
-          Serial.println("retreat");
           reverse(leftspeed,rightspeed);
         } else if (isCenter()) {
-          Serial.println("in the center");
           stop();
         } else {
           stop();
@@ -117,11 +114,11 @@ void wiiChuck() {
 }
 
 boolean isLeft() {
-  return joyx >= 150 && joyx < 250;// joyx >= 20 && joyx <= 122 && joyy >= 120 && joyy <=126;
+  return joyx >= 150 && joyx < 240;
 }
 
 boolean isRight() {
-  return joyx >= 10 && joyx <150;//joyx >= 122 && joyx <= 220 && joyy >= 122 && joyy <= 135;
+  return joyx >= 10 && joyx <150;
 }
 
 boolean isCenter() {
@@ -129,11 +126,11 @@ boolean isCenter() {
 }
 
 boolean isForward() {
-  return joyy >= 0 && joyy <= 95;//joyx >=120 && joyx <=124 && joyy >=122 && joyy <= 225;
+  return joyy >= 0 && joyy <= 95;
 }
 
 boolean isReverse() {
-  return joyy >= 160 && joyy < 250;//false;//joyx >= 120 && joyx <= 124 && joyy >= 25 && joyy <=126;
+  return joyy >= 160 && joyy < 250;
 }
 
 void debugChuck() {
