@@ -12,6 +12,8 @@
 #define SERIAL_ON 0
 #define WIICHUCK_ON 1
 
+#define DEBUG 0
+
 //    tophat left x 24
 //    tophat left y 124
 //    
@@ -56,9 +58,11 @@ void setup() {
     pinMode(8, OUTPUT);  //Initiates Speed Channel B pin
     pinMode(11, OUTPUT); //Initiates Brake Channel B pin
   
-    Serial.begin(19200);
-    Serial.println("setup");
-    
+    if (DEBUG) {
+      Serial.begin(19200);
+      Serial.println("setup");
+    }
+  
     if (WIICHUCK_ON) {
         nunchuck_setpowerpins();
         nunchuck_init(); // send the initilization handshake
@@ -85,9 +89,11 @@ void wiiChuck() {
         joyx = nunchuck_joyx() - 127;
         joyy = nunchuck_joyy() - 127;
         
-        Serial.print(joyx);
-        Serial.print(" -- ");
-        Serial.println(joyy);
+        if (DEBUG) {
+            Serial.print(joyx);
+            Serial.print(" -- ");
+            Serial.println(joyy);
+        }
         
         joyx = (joyx);
         joyy = (joyy);        
@@ -106,7 +112,9 @@ void wiiChuck() {
           stop();
         }
         
-//        debugChuck();
+        if (DEBUG) {
+            debugChuck();
+        }
     }
 
     loop_cnt++;
@@ -181,38 +189,52 @@ void stop(void) {
   analogWrite(SPEED_A, 0);
   digitalWrite(MOTOR_B, LOW);
   analogWrite(SPEED_B, 0);
-  Serial.println("stop");
+
+  if (DEBUG) {
+      Serial.println("stop");
+  }
 }
 
 void forward(char a, char b) {
-  analogWrite (SPEED_A,a);
+  analogWrite(SPEED_A,a);
   digitalWrite(MOTOR_A,LOW);
-  analogWrite (SPEED_B,b);
+  analogWrite(SPEED_B,b);
   digitalWrite(MOTOR_B,LOW);
-  Serial.println("forward");
+  if (DEBUG) {    
+      Serial.println("forward");
+  }
 }
 
 void reverse (char a, char b) {
-  analogWrite (SPEED_A,a);
+  analogWrite(SPEED_A,a);
   digitalWrite(MOTOR_A,HIGH);
-  analogWrite (SPEED_B,b);
+  analogWrite(SPEED_B,b);
   digitalWrite(MOTOR_B,HIGH);
-  Serial.println("reverse");
+
+  if (DEBUG) {
+      Serial.println("reverse");
+  }
 }
 
 void left (char a, char b) {
-  analogWrite (SPEED_A, a);
+  analogWrite(SPEED_A, a);
   digitalWrite(MOTOR_A, LOW);
-  analogWrite (SPEED_B, b);
+  analogWrite(SPEED_B, b);
   digitalWrite(MOTOR_B, HIGH);
-  Serial.println("left");
+  
+  if (DEBUG) {
+      Serial.println("left");
+  }
 }
 
 void right (char a, char b) {
-  analogWrite (SPEED_A, a);
+  analogWrite(SPEED_A, a);
   digitalWrite(MOTOR_A, HIGH);
-  analogWrite (SPEED_B, b);
+  analogWrite(SPEED_B, b);
   digitalWrite(MOTOR_B, LOW);
-  Serial.println("right");
+  
+  if (DEBUG) {
+      Serial.println("right");
+  }
 }
 
