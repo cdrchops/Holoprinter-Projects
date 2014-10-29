@@ -9,10 +9,19 @@
 #define SPEED_B 11
 #define BRAKE_B 8
 
-#define SERIAL_ON 0
-#define WIICHUCK_ON 1
+#define TRIG_PIN 7
+#define ECHO_PIN 6
 
-#define DEBUG 0
+//control the bot with keyboard commands via serial connection
+#define SERIAL_ON 0
+
+//control the bot via a wii nunchuck
+#define WIICHUCK_ON 0
+
+//control the bot via ping sensor
+#define PING_ON 1
+
+#define DEBUG 0  
 
 //    tophat left x 24
 //    tophat left y 124
@@ -59,13 +68,18 @@ void setup() {
     pinMode(11, OUTPUT); //Initiates Brake Channel B pin
   
     if (DEBUG) {
-      Serial.begin(19200);
+      Serial.begin(9600);
       Serial.println("setup");
     }
   
     if (WIICHUCK_ON) {
         nunchuck_setpowerpins();
         nunchuck_init(); // send the initilization handshake
+    }
+    
+    if (PING_ON) {
+      pinMode(TRIG_PIN, OUTPUT);
+      pinMode(ECHO_PIN, INPUT);
     }
 }
 
@@ -77,6 +91,49 @@ void loop() {
     if (!SERIAL_ON && WIICHUCK_ON) {
       wiiChuck();
     }
+    
+    if (PING_ON) {
+      pingLoop();
+    }
+}
+
+void pingLoop() {
+  long duration, distance;
+
+  digitalWrite(TRIG_PIN, LOW);  // Added this line
+  delayMicroseconds(2); // Added this line
+  digitalWrite(TRIG_PIN, HIGH);
+  delayMicroseconds(10); // Added this line
+  digitalWrite(TRIG_PIN, LOW);
+
+  duration = pulseIn(ECHO_PIN, HIGH);
+  distance = (duration/2) / 29.1;
+
+  if (distance < 6) {
+    stop();
+    reverse(leftspeed, rightspeed);
+    delay(1000);
+    stop();
+    delay(1000);
+    right(leftspeed, rightspeed);
+    delay(1000);
+    stop();
+    delay(1000);
+    forward(leftspeed, rightspeed);
+  } else {
+    forward(leftspeed, rightspeed);
+  }
+  
+  if (DEBUG) {
+    if (distance >= 200 || distance <= 0){
+      Serial.println("Out of range");
+    } else {
+      Serial.print(distance);
+      Serial.println(" cm");
+    }
+  }
+
+  delay(100);
 }
 
 void wiiChuck() {
